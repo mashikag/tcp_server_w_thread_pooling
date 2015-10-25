@@ -1,10 +1,11 @@
 require 'socket'
 
 loop do # Read lines from socket  
-  s = TCPSocket.new 'localhost', 2005
   puts "waiting for user input"
+  user_input = gets.chomp  
   puts "sending user input"
-  s.puts(gets)         # and print them
+  s = TCPSocket.new 'localhost', 2005
+  s.puts(user_input)         # and print them
   puts "sent user input"
   puts s.gets
   s.close

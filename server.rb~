@@ -30,11 +30,11 @@ workers = (0...2).map do
       while client = clients_q.pop()
         input = client.gets
         if (/HELO \w/).match(input) != nil
-          client.puts "#{input}\nIP:[ip address]\nPort:[#{port}]\nStudentID:{#{STUDENT_ID}}\n"
+          client.puts "#{input}\nIP:#{client.addr[2]}\nPort:#{port}\nStudentID:#{STUDENT_ID}\n"
         elsif input == "KILL SERVICE\n"
           kill = true
         else
-          client.puts "wot"
+          client.puts "else: " + input
         end
         client.close
       end
