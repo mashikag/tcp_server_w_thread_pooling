@@ -33,7 +33,7 @@ workers = (0...2).map do
           client.puts "Kill\n"
           kill = true
         else
-          client.puts "wot"
+          client.puts "Fuck"
         end
         client.close
       end

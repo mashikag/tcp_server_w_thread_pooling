@@ -1,0 +1,83 @@
+require 'socket'
+require 'thread'
+
+unless ARGV.length == 1
+  print "The correct number of arguments is 1!\n"
+  exit
+end
+
+port = ARGV[0]
+puts "Servers started on port #{port}"
+
+server = TCPServer.new port
+activeQ = Queue.new
+
+threadNum = 0
+
+
+Thread.new do
+  loop do
+    Thread.start(server.accept) do |client|
+      activeQ.push(client)
+    end
+  end  
+end
+
+Thread.new do
+  while true
+    if !activeQ.empty? and threadNum < 3
+      Thread.new do
+        puts"#{threadNum}"
+        threadNum+=1
+        client = activeQ.pop()
+        puts "Client active"
+        client.puts "'#{Time.now} + #{threadNum}"
+        clientRunning = true
+        while clientRunning
+          input = client.gets
+          if input == "HELO"
+            client.puts "Hello"
+          elsif input == "KIL"
+            client.puts "KILL"
+            clientRunning = false    
+          end
+        end
+        threadNum -=1
+        client.close
+      end
+    end
+  end 
+end
+
+while true
+
+end
+
+
+
+
+
+=begin
+  
+workers = (0...2).map do  
+  Thread.start(server.accept) do |client|
+    print client.gets
+    input = client.gets
+    client.puts "Hello !"
+    client.puts "Time is #{Time.now}"
+    clientRunning = true;
+    while clientRunning
+      if input.start_with?("HELO")
+        client.puts "Hello"
+      elsif input == "KIL"
+        client.puts "KILL"
+        clientRunning = false
+      else
+        puts input    
+      end
+    end
+  end
+end
+workers.map(&:join)
+
+=end
